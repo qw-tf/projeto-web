@@ -13,8 +13,8 @@ export default function Menu({ setPagina }) {
             }}>Cidades</button>
             <button onClick={() => setPagina('funcionarios')} style={{
                 marginRight: '10px'
-            }}>Funcionarios</button>
-            <button onClick={() => setPagina('servicos')}>Servicos</button>
+            }}>Funcionários</button>
+            <button onClick={() => setPagina('servicos')}>Serviços</button>
         </nav>
     );
 }

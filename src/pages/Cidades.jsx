@@ -5,23 +5,39 @@ export default function Cidade() {
     const [nome, setNome] = useState('');
     const [estado, setEstado] = useState('');
     useEffect(() => {
-        carregarCidade();
+        carregarCidades();
     }, []);
-    const carregarCidade = async () => {
+    const carregarCidades = async () => {
         try {
-            const response = await cidadeService.listar();
-            setCidade(response);
+            const { data, error } = await cidadeService.listar();
+    
+            if (error) {
+                console.error(error);
+                return;
+            }
+    
+            setCidade(data);
         } catch (error) {
-            console.error("Erro ao buscar cidade", error);
+            console.error(error);
         }
     };
     const cadastrar = async () => {
-        if (!nome || !estado) return alert("Preencha todos os campos!");
+        if (!nome || !estado) {
+            alert("Preencha todos os campos!");
+            return;
+        }
+    
         try {
-            await cidadeService.criar({ nome, estado });
-            setNome('');
-            setEstado('');
-            carregarCidade(); // Atualiza a lista após cadastrar
+            const { error } = await cidadeService.criar({ nome, estado });
+    
+            if (error) {
+                console.error(error);
+                return;
+            }
+    
+            setNome("");
+            setEstado("");
+            carregarCidades();
         } catch (error) {
             console.error("Erro ao cadastrar", error);
         }

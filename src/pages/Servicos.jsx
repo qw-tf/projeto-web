@@ -9,21 +9,40 @@ export default function Servicos() {
     }, []);
     const carregarServicos = async () => {
         try {
-            const response = await servicoService.listar();
-            setServicos(response);
+            const { data, error } = await servicoService.listar();
+    
+            if (error) {
+                console.error("Erro ao buscar serviços:", error);
+                return;
+            }
+    
+            setServicos(data);
         } catch (error) {
-            console.error("Erro ao buscar servicos", error);
+            console.error("Erro ao buscar serviços:", error);
         }
     };
     const cadastrar = async () => {
-        if (!descricao || !data_servico) return alert("Preencha todos os campos!");
+        if (!descricao || !data_servico) {
+            alert("Preencha todos os campos!");
+            return;
+        }
+    
         try {
-            await servicoService.criar({ descricao, data_servico });
-            setDescricao('');
-            setData_servico('');
-            carregarServicos(); // Atualiza a lista após cadastrar
+            const { error } = await servicoService.criar({
+                descricao,
+                data_servico,
+            });
+    
+            if (error) {
+                console.error("Erro ao cadastrar:", error);
+                return;
+            }
+    
+            setDescricao("");
+            setData_servico("");
+            carregarServicos();
         } catch (error) {
-            console.error("Erro ao cadastrar", error);
+            console.error("Erro ao cadastrar:", error);
         }
     };
     return (

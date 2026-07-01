@@ -9,21 +9,37 @@ import React, { useState, useEffect } from 'react';
         }, []);
         const carregarFuncionario = async () => {
             try {
-                const response = await funcionarioService.listar();
-                setFuncionario(response);
+                const { data, error } = await funcionarioService.listar();
+        
+                if (error) {
+                    console.error("Erro ao buscar Funcionários:", error);
+                    return;
+                }
+        
+                setFuncionario(data);
             } catch (error) {
-                console.error("Erro ao buscar Funcionario", error);
+                console.error("Erro ao buscar Funcionários:", error);
             }
         };
         const cadastrar = async () => {
-            if (!nome || !cargo) return alert("Preencha todos os campos!");
+            if (!nome || !cargo) {
+                alert("Preencha todos os campos!");
+                return;
+            }
+        
             try {
-                await funcionarioService.criar({ nome, cargo});
-                setNome('');
-                setCargo('');
-                carregarFuncionario(); // Atualiza a lista após cadastrar
+                const { error } = await funcionarioService.criar({ nome, cargo });
+        
+                if (error) {
+                    console.error("Erro ao cadastrar:", error);
+                    return;
+                }
+        
+                setNome("");
+                setCargo("");
+                carregarFuncionario();
             } catch (error) {
-                console.error("Erro ao cadastrar", error);
+                console.error("Erro ao cadastrar:", error);
             }
         };
         return (
